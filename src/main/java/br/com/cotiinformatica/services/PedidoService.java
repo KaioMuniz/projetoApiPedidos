@@ -2,10 +2,14 @@ package br.com.cotiinformatica.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.cotiinformatica.components.RabbitMQComponent;
+import br.com.cotiinformatica.dtos.PedidoCriadoEventDto;
 import br.com.cotiinformatica.dtos.PedidoRequestDto;
 import br.com.cotiinformatica.dtos.PedidoResponseDto;
 import br.com.cotiinformatica.entities.Pedido;
@@ -15,6 +19,7 @@ import br.com.cotiinformatica.repositories.PedidoRepository;
 public class PedidoService {
 
 	@Autowired PedidoRepository pedidoRepository;
+	@Autowired RabbitMQComponent rabbitMQComponent;
 	
 	public PedidoResponseDto criarPedido(PedidoRequestDto request) throws Exception {
 		
@@ -26,6 +31,14 @@ public class PedidoService {
 		pedido.setDescricao(request.getDescricao());
 		
 		pedidoRepository.save(pedido);
+		
+		var pedidoCriado = new PedidoCriadoEventDto();
+		
+		pedidoCriado.setId(UUID.randomUUID());
+		pedidoCriado.setDataGeracao(new Date());
+		pedidoCriado.setPedido(pedido);
+		
+		rabbitMQComponent.sendMessage(pedidoCriado);
 		
 		var response = new PedidoResponseDto();
 		

@@ -5,17 +5,17 @@ import java.util.UUID;
 
 import br.com.cotiinformatica.entities.Pedido;
 
-public class PedidoEventEnvelopeDto {
+public class PedidoCriadoEventDto {
 
 	private UUID id;
 	private Date dataGeracao;
 	private Pedido pedido;
 	
-	public PedidoEventEnvelopeDto() {
+	public PedidoCriadoEventDto() {
 		super();
 	}
 	
-	public PedidoEventEnvelopeDto(UUID id, Date dataGeracao, Pedido pedido) {
+	public PedidoCriadoEventDto(UUID id, Date dataGeracao, Pedido pedido) {
 		super();
 		this.id = id;
 		this.dataGeracao = dataGeracao;
